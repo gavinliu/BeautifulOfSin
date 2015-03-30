@@ -5,12 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.DrawFilter;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 
 public class WaveView extends View {
 
-    private static final int X_SPEED = 20;
+    private static final int X_SPEED = 20; // px
     private int mXOffset = 0;
 
     private int mViewWidth, mViewHeight;
@@ -20,6 +21,8 @@ public class WaveView extends View {
 
     private float[] mPointY;
     private float[] mDynamicPointY;
+
+    Handler handler = new Handler();
 
     public WaveView(Context context) {
         super(context);
@@ -35,6 +38,7 @@ public class WaveView extends View {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setColor(0xFF009688);
 
         mDrawFilter = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
     }
@@ -42,6 +46,8 @@ public class WaveView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        long startTime = System.currentTimeMillis();
+
         canvas.setDrawFilter(mDrawFilter);
 
         runWave();
@@ -56,7 +62,21 @@ public class WaveView extends View {
             mXOffset = 0;
         }
 
-        postInvalidate();
+        long endTime = System.currentTimeMillis();
+
+        int delay = 0;
+
+        if ((endTime - startTime) < 30) {
+            delay = (int) (30 - (endTime - startTime));
+        }
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+               postInvalidate();
+            }
+        }, delay);
+
     }
 
     @Override
