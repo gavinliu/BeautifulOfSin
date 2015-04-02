@@ -22,8 +22,6 @@ public class WaveView extends View {
     private float[] mPointY;
     private float[] mDynamicPointY;
 
-    Handler handler = new Handler();
-
     public WaveView(Context context) {
         super(context);
     }
@@ -70,13 +68,7 @@ public class WaveView extends View {
             delay = (int) (30 - (endTime - startTime));
         }
 
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-               postInvalidate();
-            }
-        }, delay);
-
+        postInvalidateDelayed(delay);
     }
 
     @Override
